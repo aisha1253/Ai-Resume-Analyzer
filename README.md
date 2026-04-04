@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎯 AI Resume Skill Analyzer
 
-## Getting Started
+> Paste your resume + job description — Gemini AI calculates your match score, finds missing skills, and suggests improvements.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                         User (Browser)                           │
+└───────────────────────────────┬──────────────────────────────────┘
+                                │
+┌───────────────────────────────▼──────────────────────────────────┐
+│              Next.js App  (React + API Routes)                   │
+│              Single codebase — frontend + backend                │
+│                                                                  │
+│   ┌──────────────────────────┐      ┌────────────────────────┐   │
+│   │    Frontend  (React)     │      │  Backend (API Routes)  │   │
+│   │                          │      │                        │   │
+│   │  app/page.tsx            │─────▶│  app/api/analyze/      │   │
+│   │  components/             │fetch │    route.ts            │   │
+│   │   ├─ ResumeForm          │      │                        │   │
+│   │   ├─ ScoreCard           │      │  lib/gemini.ts         │   │
+│   │   └─ SkillBadge          │      │  lib/validation.ts     │   │
+│   │  hooks/useAnalyze.ts     │◀─────│  lib/types.ts          │   │
+│   │  Tailwind CSS            │ JSON │  .env.local (secret)   │   │
+│   └──────────────────────────┘      └───────────┬────────────┘   │
+│                                                 │                │
+└─────────────────────────────────────────────────│────────────────┘
+                                                  │ HTTPS
+                                ┌─────────────────▼──────────────┐
+                                │       Google Gemini API        │
+                                │      gemini-1.5-flash          │
+                                └────────────────────────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Match Score** — AI calculates 0–100% compatibility between resume and job
+- **Matched Skills** — highlights skills you already have (green badges)
+- **Missing Skills** — shows what the job needs that you lack (red badges)
+- **AI Suggestions** — 3 actionable tips to improve your resume
+- **Experience Level** — detects Junior / Mid / Senior from your resume
+- **Input Validation** — Zod validates all inputs before hitting the AI
+- **Error Handling** — loading states, API errors, and empty input all handled
+- **Fully typed** — TypeScript throughout frontend and backend
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Layer      | Technology               |
+|------------|--------------------------|
+| Framework  | Next.js 14 (App Router)  |
+| Language   | TypeScript               |
+| Styling    | Tailwind CSS             |
+| AI Model   | Google Gemini API        |
+| Validation | Zod                      |
+| Icons      | Lucide React             |
+| Testing    | Jest + Testing Library   |
+| Deploy     | Vercel (free)            |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔄 How It Works
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+1. User pastes resume text + job description
+          │
+          ▼
+2. Frontend sends POST /api/analyze
+          │
+          ▼
+3. Zod validates input (length, empty check)
+          │
+          ▼
+4. lib/gemini.ts sends structured prompt to Gemini API
+          │
+          ▼
+5. Gemini returns JSON:
+   {
+     matchScore: 74,
+     matchedSkills: ["React", "TypeScript"],
+     missingSkills: ["AWS", "Docker"],
+     suggestions: ["Get AWS certified", ...],
+     experienceLevel: "Mid"
+   }
+          │
+          ▼
+6. Frontend renders:
+   ├─ ScoreCard  →  74% (yellow bar)
+   ├─ Green badges  →  matched skills
+   ├─ Red badges    →  missing skills
+   └─ Numbered list →  suggestions
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone
+git clone https://github.com/your-username/resume-analyzer.git
+cd resume-analyzer
+
+# 2. Install
+npm install
+
+# 3. Add Gemini API key
+cp .env.example .env.local
+# Edit .env.local → add your GEMINI_API_KEY
+# Get free key at: https://aistudio.google.com
+
+# 4. Run
+npm run dev
+# Open http://localhost:3000
+```
+
+---
+
+## 📁 Folder Structure
+
+```
+resume-analyzer/
+├── app/
+│   ├── page.tsx                 ← Main UI
+│   ├── layout.tsx               ← Root layout
+│   └── api/analyze/
+│       └── route.ts             ← POST endpoint
+├── components/
+│   ├── ResumeForm.tsx
+│   ├── ScoreCard.tsx
+│   ├── SkillBadge.tsx
+│   └── LoadingSpinner.tsx
+├── lib/
+│   ├── gemini.ts                ← Gemini API call
+│   ├── validation.ts            ← Zod schemas
+│   └── types.ts                 ← TypeScript types
+├── hooks/
+│   └── useAnalyze.ts            ← Custom hook
+├── __tests__/                   ← Jest tests
+├── .env.local                   ← Secret (never commit)
+└── .env.example                 ← Safe to commit
+```
+
+---
+
+## 📄 License
+
+MIT — free to use and modify.
