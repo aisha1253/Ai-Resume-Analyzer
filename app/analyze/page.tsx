@@ -62,20 +62,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex flex-col">
+    <div className="min-h-screen bg-navy flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-white/10 bg-navy sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-gray-900 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
           >
             <FileText size={24} />
-            <span className="text-xl font-semibold">AI Resume Analyzer</span>
+            <span className="text-xl font-semibold">SkillSync AI</span>
           </button>
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 text-white/70 rounded-lg hover:bg-white/10 transition-colors text-sm font-medium border border-white/10"
           >
             <ArrowLeft size={16} />
             Back to Home
@@ -88,10 +88,10 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-semibold text-gray-900 text-center">
+            <h1 className="text-3xl font-semibold text-white text-center">
               Analyze Your Resume
             </h1>
-            <p className="text-gray-500 mt-2 text-center">
+            <p className="text-white/60 mt-2 text-center">
               Paste or upload your resume and a job description — Gemini AI will analyze the match
             </p>
           </div>
@@ -102,7 +102,7 @@ export default function Home() {
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2">
                     Your Resume
                   </label>
                   
@@ -120,7 +120,11 @@ export default function Home() {
                       />
                       <label
                         htmlFor="resume-upload"
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors text-sm font-medium"
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors text-sm font-medium border ${
+                          uploadedFile
+                            ? 'bg-mint/10 text-mint border-mint'
+                            : 'bg-navy text-white border-mint/40 hover:border-mint hover:bg-mint/10'
+                        }`}
                       >
                         {isExtracting ? (
                           <>
@@ -130,25 +134,25 @@ export default function Home() {
                         ) : (
                           <>
                             <Upload size={16} />
-                            Upload Resume
+                            {uploadedFile ? 'File Loaded' : 'Upload Resume'}
                           </>
                         )}
                       </label>
                       {uploadedFile && (
-                        <div className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm">
+                        <div className="flex items-center gap-2 px-3 py-2 bg-mint/10 text-mint rounded-lg text-sm border border-mint/30">
                           <FileText size={14} />
                           <span className="max-w-[150px] truncate">{uploadedFile.name}</span>
                           <button
                             type="button"
                             onClick={clearFile}
-                            className="text-green-700 hover:text-green-900"
+                            className="text-mint hover:text-mint/80"
                           >
                             <X size={14} />
                           </button>
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-white/40 mt-1">
                       Supported formats: PDF, Word (.docx)
                     </p>
                   </div>
@@ -160,11 +164,11 @@ export default function Home() {
                     value={resumeText}
                     onChange={(e) => setResumeText(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm outline-none focus:ring-2 focus:ring-gray-200 resize-none"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white outline-none focus:ring-2 focus:ring-mint/40 focus:border-mint/40 resize-none placeholder:text-white/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white/70 mb-2">
                     Job Description
                   </label>
                   <textarea
@@ -173,14 +177,21 @@ export default function Home() {
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm outline-none focus:ring-2 focus:ring-gray-200 resize-none"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white outline-none focus:ring-2 focus:ring-mint/40 focus:border-mint/40 resize-none placeholder:text-white/30"
                   />
                 </div>
               </div>
 
+              {/* Divider */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 border-t border-white/10"></div>
+                <span className="text-white/40 text-sm">or paste manually</span>
+                <div className="flex-1 border-t border-white/10"></div>
+              </div>
+
               {/* Error display */}
               {error && (
-                <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-3 mt-2">
+                <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mt-2">
                   {error}
                 </p>
               )}
@@ -189,7 +200,7 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gray-900 text-white rounded-xl py-3 text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                className="w-full bg-mint text-navy rounded-xl py-3 text-sm font-semibold hover:bg-mint/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -213,8 +224,8 @@ export default function Home() {
             {/* Skills grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Matched Skills */}
-              <div className="rounded-2xl border border-gray-200 bg-white p-5">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h3 className="text-sm font-medium text-white mb-3">
                   Matched Skills ({result.matchedSkills.length})
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -225,8 +236,8 @@ export default function Home() {
               </div>
 
               {/* Missing Skills */}
-              <div className="rounded-2xl border border-gray-200 bg-white p-5">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h3 className="text-sm font-medium text-white mb-3">
                   Missing Skills ({result.missingSkills.length})
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -238,14 +249,14 @@ export default function Home() {
             </div>
 
             {/* Suggestions card */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-5">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <h3 className="text-sm font-medium text-white mb-3">
                 AI Suggestions to Improve
               </h3>
               <ol className="space-y-2">
                 {result.suggestions.map((suggestion, index) => (
-                  <li key={index} className="flex gap-3 text-sm text-gray-600">
-                    <span className="text-blue-600 font-medium">
+                  <li key={index} className="flex gap-3 text-sm text-white/70">
+                    <span className="text-mint font-medium">
                       {index + 1}.
                     </span>
                     <span>{suggestion}</span>
@@ -257,7 +268,7 @@ export default function Home() {
             {/* Reset button */}
             <button
               onClick={reset}
-              className="w-full border border-gray-200 rounded-xl py-3 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              className="w-full border border-white/10 rounded-xl py-3 text-sm text-white/60 hover:bg-white/5 transition-colors"
             >
               ← Analyze Another Resume
             </button>
@@ -267,9 +278,9 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-8">
+      <footer className="border-t border-white/10 bg-navy py-8">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-gray-600 text-sm">
+          <p className="text-white/30 text-sm">
             Built with Next.js, Gemini AI, and Tailwind CSS
           </p>
         </div>

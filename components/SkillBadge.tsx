@@ -10,8 +10,8 @@ export default function SkillBadge({ skill, type }: SkillBadgeProps) {
     <span
       className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
         isMatched
-          ? 'bg-green-50 text-green-700 border border-green-200'
-          : 'bg-red-50 text-red-700 border border-red-200'
+          ? 'bg-mint/15 text-mint border border-mint/30'
+          : 'bg-blue/15 text-blue border border-blue/30'
       }`}
     >
       {isMatched ? '✓' : '+'} {skill}

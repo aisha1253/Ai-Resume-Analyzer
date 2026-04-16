@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AI Resume Analyzer',
+  title: 'SkillSync AI',
   description: 'Match your resume to any job description using Gemini AI',
 };
 
